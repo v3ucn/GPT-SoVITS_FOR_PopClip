@@ -7,10 +7,13 @@
 # Create a temporary audio file
 temp_audio_file=$(mktemp)
 
-# Use curl to download and save the audio data to the temporary file
-curl -X POST "http://localhost:9880/tts_to_audio/" \
-     -H "Content-Type: application/json" \
-     -d "{\"text\": \"$POPCLIP_TEXT\"}" -so "$temp_audio_file"
+escaped_text=$(echo "$POPCLIP_TEXT" | tr '\n' ' ')
+
+
+json_body='{"text":"'"$escaped_text"'"}'
+
+# use curl to download and save the audio data to the tempora
+curl -X POST "http://localhost:9880/tts_to_audio/" -H "Content-Type: application/json" -d "$json_body" -so "$temp_audio_file"
 
 # Play the temporary audio file using afplay
 afplay "$temp_audio_file"
